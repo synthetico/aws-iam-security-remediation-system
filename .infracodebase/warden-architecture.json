@@ -1,0 +1,156 @@
+{
+  "name": "Warden IAM Security Remediation System",
+  "nodes": [
+    {
+      "id": "cloudtrail",
+      "label": "CloudTrail",
+      "subtitle": "API Activity Monitoring",
+      "icon": "/icons/aws/management/cloudtrail.png",
+      "x": 440,
+      "y": 0
+    },
+    {
+      "id": "eventbridge",
+      "label": "EventBridge Rule",
+      "subtitle": "warden-cloudtrail-monitor",
+      "icon": "/icons/aws/integration/eventbridge-rule.png",
+      "x": 440,
+      "y": 250
+    },
+    {
+      "id": "lambda",
+      "label": "Lambda Function",
+      "subtitle": "warden-quarantine-lambda",
+      "icon": "/icons/aws/compute/lambda.png",
+      "x": 440,
+      "y": 500
+    },
+    {
+      "id": "quarantine_policy",
+      "label": "Quarantine Policy",
+      "subtitle": "warden-quarantine-deny-all",
+      "icon": "/icons/aws/security/identity-and-access-management-iam-permissions.png",
+      "x": 440,
+      "y": 750
+    },
+    {
+      "id": "iam_user",
+      "label": "Compromised Principal",
+      "subtitle": "IAM User/Role",
+      "icon": "/icons/aws/security/identity-and-access-management-iam.png",
+      "x": 440,
+      "y": 1000
+    },
+    {
+      "id": "iam_role",
+      "label": "Lambda Execution Role",
+      "subtitle": "warden-lambda-execution-role",
+      "icon": "/icons/aws/security/identity-and-access-management-iam-role.png",
+      "x": 110,
+      "y": 250
+    },
+    {
+      "id": "sns",
+      "label": "SNS Topic",
+      "subtitle": "warden-security-alerts",
+      "icon": "/icons/aws/integration/simple-notification-service-sns-topic.png",
+      "x": 770,
+      "y": 750
+    },
+    {
+      "id": "kms",
+      "label": "KMS Key",
+      "x": 770,
+      "y": 1000,
+      "subtitle": "SNS Encryption",
+      "icon": "/icons/aws/security/key-management-service.png"
+    },
+    {
+      "id": "cloudwatch",
+      "label": "CloudWatch Logs",
+      "subtitle": "/aws/lambda/warden-quarantine-lambda",
+      "icon": "/icons/aws/management/cloudwatch-logs.png",
+      "x": 110,
+      "y": 750
+    },
+    {
+      "id": "dlq",
+      "label": "Dead Letter Queue",
+      "subtitle": "warden-lambda-dlq",
+      "icon": "/icons/aws/integration/simple-queue-service-sqs-queue.png",
+      "x": 770,
+      "y": 250
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "cloudtrail",
+      "target": "eventbridge",
+      "label": "Suspicious Events",
+      "color": "red"
+    },
+    {
+      "id": "e2",
+      "source": "eventbridge",
+      "target": "lambda",
+      "label": "Trigger"
+    },
+    {
+      "id": "e3",
+      "source": "lambda",
+      "target": "quarantine_policy",
+      "label": "Attach Policy"
+    },
+    {
+      "id": "e4",
+      "source": "quarantine_policy",
+      "target": "iam_user",
+      "label": "Applied To"
+    },
+    {
+      "id": "e5",
+      "source": "lambda",
+      "target": "sns",
+      "label": "Publish Alert"
+    },
+    {
+      "id": "e6",
+      "source": "lambda",
+      "target": "cloudwatch",
+      "label": "Logs"
+    },
+    {
+      "id": "e7",
+      "source": "iam_role",
+      "target": "lambda",
+      "label": "Grants Permissions"
+    },
+    {
+      "id": "e8",
+      "source": "kms",
+      "target": "sns",
+      "label": "Encrypts"
+    },
+    {
+      "id": "e9",
+      "source": "lambda",
+      "target": "dlq",
+      "label": "Failed Invocations",
+      "style": "dashed"
+    }
+  ],
+  "legend": {
+    "edges": [
+      {
+        "label": "Critical Security Flow",
+        "color": "red",
+        "style": "solid"
+      },
+      {
+        "label": "Error Handling",
+        "style": "dashed"
+      }
+    ]
+  }
+}
