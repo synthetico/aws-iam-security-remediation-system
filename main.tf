@@ -57,6 +57,49 @@ resource "aws_sns_topic_subscription" "email_subscription" {
   endpoint  = var.notification_email
 }
 
+# S3 bucket for CloudTrail logs
+resource "aws_s3_bucket" "cloudtrail_logs" {
+  bucket = "warden-trail-logs-${data.aws_caller_identity.current.account_id}"
+}
+
+resource "aws_s3_bucket_policy" "cloudtrail_logs_policy" {
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AWSCloudTrailAclCheck"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:GetBucketAcl"
+        Resource = aws_s3_bucket.cloudtrail_logs.arn
+      },
+      {
+        Sid    = "AWSCloudTrailWrite"
+        Effect = "Allow"
+        Principal = {
+          Service = "cloudtrail.amazonaws.com"
+        }
+        Action   = "s3:PutObject"
+        Resource = "${aws_s3_bucket.cloudtrail_logs.arn}/*"
+        Condition = {
+          StringEquals = {
+            "s3:x-amz-acl" = "bucket-owner-full-control"
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_cloudtrail" "warden_trail" {
+  name           = "warden-trail"
+  s3_bucket_name = aws_s3_bucket.cloudtrail_logs.bucket
+}
+
 # IAM Quarantine Policy - Deny all actions
 resource "aws_iam_policy" "warden_quarantine_deny_all" {
   name        = "warden-quarantine-deny-all"

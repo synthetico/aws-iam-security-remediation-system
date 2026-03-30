@@ -1,0 +1,7 @@
+[
+  {
+    "Source": "aws.iam",
+    "DetailType": "AWS API Call via CloudTrail",
+    "Detail": "{\"eventName\":\"CreateAccessKey\",\"eventTime\":\"2026-03-30T12:00:00Z\",\"eventSource\":\"iam.amazonaws.com\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"192.168.1.100\",\"userAgent\":\"aws-cli/2.34.9\",\"userIdentity\":{\"type\":\"IAMUser\",\"arn\":\"arn:aws:iam::935595346298:user/testuser\",\"userName\":\"testuser\",\"principalId\":\"AIDACKCEVSQ6C2EXAMPLE\",\"accountId\":\"935595346298\"}}"
+  }
+]

@@ -43,7 +43,17 @@ def lambda_handler(event, context):
         account_id = user_identity.get('accountId', 'Unknown')
 
         # Parse principal name and type for quarantine action
-        principal_name, identity_type = parse_principal_identity(user_identity)
+        if event_name in ["CreateAccessKey", "AttachUserPolicy"]:
+            principal_name = detail.get('requestParameters', {}).get('userName')
+            identity_type = 'user'
+            if not principal_name:
+                logger.error("Unable to extract target user from requestParameters")
+                return {
+                    'statusCode': 400,
+                    'body': json.dumps('Unable to extract target user')
+                }
+        else:
+            principal_name, identity_type = parse_principal_identity(user_identity)
 
         if not principal_name or not identity_type:
             logger.error("Unable to extract principal information from event")
