@@ -225,7 +225,7 @@ resource "aws_iam_role_policy" "warden_lambda_permissions" {
 
 # Lambda function for quarantine enforcement
 resource "aws_lambda_function" "warden_quarantine" {
-  filename      = "lambda_function.zip"
+  filename      = "${path.module}/lambda_function.zip"
   function_name = "warden-quarantine-lambda"
   role          = aws_iam_role.warden_lambda_execution.arn
   handler       = "index.lambda_handler"
