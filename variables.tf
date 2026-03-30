@@ -7,5 +7,5 @@ variable "region" {
 variable "notification_email" {
   description = "Email address for security alert notifications"
   type        = string
-  default     = "tdemy237@gmail.com"
+  default     = "email"
 }
