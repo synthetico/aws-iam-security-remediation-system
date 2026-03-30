@@ -8,7 +8,7 @@
     "userAgent": "aws-cli/2.34.9",
     "userIdentity": {
       "type": "IAMUser",
-      "arn": "arn:aws:iam::935595346298:user/testwardenuser",
+      "arn": "Test User ARN",
       "userName": "testwardenuser",
       "principalId": "AIDACKCEVSQ6C2EXAMPLE",
       "accountId": "935595346298"
